@@ -54,6 +54,18 @@ namespace retro::image
 #pragma endregion
 #pragma region Operations
 
+	void bitmap::create(std::size_t width, std::size_t height)
+	{
+		if (width == 0 || height == 0)
+		{
+			return;
+		}
+
+		m_width = width;
+		m_height = height;
+		m_pixels.resize(m_width * m_height * 4, color::ALPHA_TRANSPARENT);
+	}
+
 	void bitmap::load_from_file(const std::filesystem::path& path)
 	{
 		if (!std::filesystem::exists(path))
@@ -125,6 +137,63 @@ namespace retro::image
 		m_width = 0;
 		m_height = 0;
 		m_pixels.clear();
+	}
+
+	void bitmap::mask_from_color(const retro::image::color& color, std::uint8_t alpha) noexcept
+	{
+		if (m_pixels.empty() || m_width == 0 || m_height == 0)
+		{
+			return;
+		}
+
+		retro::image::color* pixels = reinterpret_cast<retro::image::color*>(m_pixels.data());
+		for (std::size_t i = 0; i < size(); i++)
+		{
+			if (pixels[i].red == color.red && pixels[i].green == color.green && pixels[i].blue == color.blue)
+			{
+				pixels[i].alpha = alpha;
+			}
+		}
+	}
+
+	void bitmap::flip_vertical() noexcept
+	{
+		if (m_pixels.empty() || m_width == 0 || m_height == 0)
+		{
+			return;
+		}
+
+		const std::size_t row_size = m_width * 4;
+		for (std::size_t y = 0; y < m_height / 2; ++y)
+		{
+			const std::size_t opposite_y = m_height - 1 - y;
+			for (std::size_t x = 0; x < row_size; ++x)
+			{
+				std::swap(m_pixels[y * row_size + x], m_pixels[opposite_y * row_size + x]);
+			}
+		}
+	}
+
+	void bitmap::flip_horizontal() noexcept
+	{
+		if (m_pixels.empty() || m_width == 0 || m_height == 0)
+		{
+			return;
+		}
+
+		const std::size_t row_size = m_width * 4;
+		for (std::size_t y = 0; y < m_height; ++y)
+		{
+			for (std::size_t x = 0; x < m_width / 2; ++x)
+			{
+				const std::size_t left = y * row_size + x * 4;
+				const std::size_t right = y * row_size + (m_width - 1 - x) * 4;
+				for (std::size_t c = 0; c < 4; ++c)
+				{
+					std::swap(m_pixels[left + c], m_pixels[right + c]);
+				}
+			}
+		}
 	}
 
 #pragma endregion

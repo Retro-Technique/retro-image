@@ -71,15 +71,20 @@ namespace retro::image
 		[[nodiscard]] constexpr std::size_t width() const noexcept { return m_width; }
 		[[nodiscard]] constexpr std::size_t height() const noexcept { return m_height; }
 		[[nodiscard]] constexpr std::size_t size() const noexcept { return m_width * m_height; }
+		[[nodiscard]] constexpr const std::uint8_t* data() const noexcept { return m_pixels.data(); }
 
 #pragma endregion
 #pragma region Operations
 
 	public:
 
+		void create(std::size_t width, std::size_t height);
 		void load_from_file(const std::filesystem::path& path);
 		void save_to_file(const std::filesystem::path& path) const;
 		void clear() noexcept;
+		void mask_from_color(const retro::image::color& color, std::uint8_t alpha = retro::image::color::ALPHA_TRANSPARENT) noexcept;
+		void flip_vertical() noexcept;
+		void flip_horizontal() noexcept;
 
 #pragma endregion
 	};
