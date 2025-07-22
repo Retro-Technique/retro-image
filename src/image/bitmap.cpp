@@ -1,0 +1,132 @@
+
+/**
+ *
+ * Retro
+ *
+ * CEA CNRS INRIA LOGICIEL LIBRE
+ *
+ * Copyright(c) 2014-2025 Retro Technique
+ *
+ * This software is a computer program whose purpose is to provide
+ * minimalist "C with classes" functionalities.
+ *
+ * This software is governed by the CeCILL license under French law and
+ * abiding by the rules of distribution of free software.  You can  use,
+ * modify and/ or redistribute the software under the terms of the CeCILL
+ * license as circulated by CEA, CNRS and INRIA at the following URL
+ * "http://www.cecill.info".
+ *
+ * As a counterpart to the access to the source code and  rights to copy,
+ * modify and redistribute granted by the license, users are provided only
+ * with a limited warranty  and the software's author,  the holder of the
+ * economic rights,  and the successive licensors  have only  limited
+ * liability.
+ *
+ * In this respect, the user's attention is drawn to the risks associated
+ * with loading,  using,  modifying and/or developing or reproducing the
+ * software by the user in light of its specific status of free software,
+ * that may mean  that it is complicated to manipulate,  and  that  also
+ * therefore means  that it is reserved for developers  and  experienced
+ * professionals having in-depth computer knowledge. Users are therefore
+ * encouraged to load and test the software's suitability as regards their
+ * requirements in conditions enabling the security of their systems and/or
+ * data to be ensured and,  more generally, to use and operate it in the
+ * same conditions as regards security.
+ *
+ * The fact that you are presently reading this means that you have had
+ * knowledge of the CeCILL license and that you accept its terms.
+ *
+ */
+
+#include "pch.h"
+
+namespace retro::image
+{
+
+#pragma region Constructors
+
+	bitmap::bitmap()
+		: m_width(0)
+		, m_height(0)
+	{
+	}
+
+#pragma endregion
+#pragma region Operations
+
+	void bitmap::load_from_file(const std::filesystem::path& path)
+	{
+		if (!std::filesystem::exists(path))
+		{
+			throw std::invalid_argument("File does not exist: " + path.string());
+		}
+
+		if (!std::filesystem::is_regular_file(path))
+		{
+			throw std::invalid_argument("Path is not a regular file: " + path.string());
+		}
+
+		clear();
+
+		stbi_uc* data = stbi_load(path.string().c_str(), reinterpret_cast<int*>(&m_width), reinterpret_cast<int*>(&m_height), nullptr, STBI_rgb_alpha);
+		if (!data)
+		{
+			throw std::runtime_error("Failed to load image: " + path.string() + " - " + stbi_failure_reason());
+		}
+
+		m_width = static_cast<std::size_t>(m_width);
+		m_height = static_cast<std::size_t>(m_height);
+		m_pixels.assign(data, data + (m_width * m_height * 4));
+
+		stbi_image_free(data);
+	}
+
+	void bitmap::save_to_file(const std::filesystem::path& path) const
+	{
+		if (m_pixels.empty() || m_width == 0 || m_height == 0)
+		{
+			return;
+		}
+
+		if (!std::filesystem::exists(path))
+		{
+			throw std::invalid_argument("File does not exist: " + path.string());
+		}
+
+		if (!std::filesystem::is_regular_file(path))
+		{
+			throw std::invalid_argument("Path is not a regular file: " + path.string());
+		}
+
+		const std::string ext = path.extension().string();
+		int ret = 1;
+
+		if (ext == ".png")
+		{
+			ret = stbi_write_png(path.string().c_str(), static_cast<int>(m_width), static_cast<int>(m_height), 4, m_pixels.data(), static_cast<int>(m_width) * 4);
+		}
+		else if (ext == ".jpg" || ext == ".jpeg")
+		{
+			ret = stbi_write_jpg(path.string().c_str(), static_cast<int>(m_width), static_cast<int>(m_height), 4, m_pixels.data(), 100);
+		}
+		else if (ext == ".bmp")
+		{
+			ret = stbi_write_bmp(path.string().c_str(), static_cast<int>(m_width), static_cast<int>(m_height), 4, m_pixels.data());
+		}
+
+		if (ret == 0)
+		{
+			throw std::runtime_error("Failed to save image: " + path.string() + " - " + stbi_failure_reason());
+		}
+	}
+
+	void bitmap::clear() noexcept
+	{
+		m_width = 0;
+		m_height = 0;
+		m_pixels.clear();
+	}
+
+#pragma endregion
+
+}

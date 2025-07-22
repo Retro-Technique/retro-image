@@ -1,30 +1,22 @@
-#find_package(Boost REQUIRED COMPONENTS property_tree)
-#find_package(Boost REQUIRED COMPONENTS beast)
-#find_package(Boost REQUIRED COMPONENTS iostreams)
-#find_package(boost_algorithm CONFIG REQUIRED)
+find_package(Stb REQUIRED)
 
 add_library(${PROJECT_NAME} 
 	SHARED 
-		"template/pch.cpp"
-		"template/pch.h"
+		"image/pch.cpp"
+		"image/pch.h"
+		"image/bitmap.cpp"
 )
 
 target_include_directories(${PROJECT_NAME}  
 	PUBLIC 
 		${PROJECT_SOURCE_DIR}/include
+	PRIVATE 
+		${Stb_INCLUDE_DIR}
 )
-
-#target_link_libraries(${PROJECT_NAME}  
-#	PRIVATE 
-#		Boost::property_tree
-#		Boost::beast
-#		Boost::iostreams
-#		Boost::algorithm
-#)
 
 target_compile_options(${PROJECT_NAME}
 	PRIVATE 
-		$<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
+		$<$<CXX_COMPILER_ID:MSVC>:/W4>
 		$<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic -Wconversion -Wshadow>
 )
 
@@ -42,10 +34,10 @@ target_compile_options(${PROJECT_NAME}
 
 target_precompile_headers(${PROJECT_NAME}
 	PRIVATE
-		"template/pch.h"
+		"image/pch.h"
 )
 
 target_compile_definitions(${PROJECT_NAME}
 	PRIVATE
-		RETRO_TEMPLATE_EXPORTS
+		RETRO_IMAGE_EXPORTS
 )

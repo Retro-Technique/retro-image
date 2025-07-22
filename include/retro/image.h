@@ -39,4 +39,16 @@
 
 #pragma once
 
-#include <retro/template.h>
+#ifndef __RETRO_IMAGE_H_INCLUDED__
+#define __RETRO_IMAGE_H_INCLUDED__
+
+#include <iostream>
+#include <cstdint>
+#include <filesystem>
+
+#include "image/export.h"
+#include "image/color.h"
+#include "image/colors.h"
+#include "image/bitmap.h"
+
+#endif

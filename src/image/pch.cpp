@@ -37,11 +37,10 @@
  *
  */
 
-#pragma once
+#include "pch.h"
 
-#ifndef __RETRO_TEMPLATE_H_INCLUDED__
-#define __RETRO_TEMPLATE_H_INCLUDED__
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 
-#include "template/export.h"
-
-#endif
+#include <stb_image.h>
+#include <stb_image_write.h>

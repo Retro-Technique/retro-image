@@ -39,22 +39,49 @@
 
 #pragma once
 
-#ifndef __RETRO_TEMPLATE_H_INCLUDED__
-#error "Do not include this file directly, include <retro/template.h> instead."
+#ifndef __RETRO_IMAGE_H_INCLUDED__
+#error "Do not include this file directly, include <retro/image.h> instead."
 #endif
 
-#if defined(_WIN32)
-#define RETRO_TEMPLATE_API_EXPORT __declspec(dllexport)
-#define RETRO_TEMPLATE_API_IMPORT __declspec(dllimport)
-#else
-#define RETRO_TEMPLATE_API_EXPORT __attribute__((__visibility__("default")))
-#define RETRO_TEMPLATE_API_IMPORT __attribute__((__visibility__("default")))
-#endif
+namespace retro::image
+{
 
-#if defined(RETRO_TEMPLATE_EXPORTS)
-#define RETRO_TEMPLATE_API RETRO_TEMPLATE_API_EXPORT
-#define RETRO_TEMPLATE_EXTERN
-#else
-#define RETRO_TEMPLATE_API RETRO_TEMPLATE_API_IMPORT
-#define RETRO_TEMPLATE_EXTERN extern
-#endif
+	class RETRO_IMAGE_API bitmap
+	{
+#pragma region Constructors
+
+	public:
+
+		bitmap();
+		bitmap(const bitmap& other) = default;
+		bitmap(bitmap&& other) noexcept = default;
+		~bitmap() = default;
+
+#pragma endregion
+#pragma region Attributes
+
+	private:
+
+		std::vector<std::uint8_t> m_pixels;
+		std::size_t m_width;
+		std::size_t m_height;
+
+	public:
+
+		[[nodiscard]] constexpr std::size_t width() const noexcept { return m_width; }
+		[[nodiscard]] constexpr std::size_t height() const noexcept { return m_height; }
+		[[nodiscard]] constexpr std::size_t size() const noexcept { return m_width * m_height; }
+
+#pragma endregion
+#pragma region Operations
+
+	public:
+
+		void load_from_file(const std::filesystem::path& path);
+		void save_to_file(const std::filesystem::path& path) const;
+		void clear() noexcept;
+
+#pragma endregion
+	};
+
+}
