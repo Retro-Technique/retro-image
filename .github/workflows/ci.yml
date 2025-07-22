@@ -65,12 +65,12 @@ jobs:
 
     - name: Run Code Analysis (Ubuntu)
       if: matrix.os == 'ubuntu-24.04'
-      run: cppcheck --enable=warning --language=c++ --platform=unix64 --std=c++20 -I include/retro/tiled --error-exitcode=1 src/tiled/*
+      run: cppcheck --enable=warning --language=c++ --platform=unix64 --std=c++20 -I include/retro/image --error-exitcode=1 src/image/*
   
     - name: Run Code Analysis (Windows)
       if: matrix.os == 'windows-2022'
       shell: cmd
-      run: '"C:\Program Files\Cppcheck\cppcheck.exe" --enable=warning --language=c++ --platform=win64 --std=c++20 -I include/retro/tiled --error-exitcode=1 src/tiled/*'
+      run: '"C:\Program Files\Cppcheck\cppcheck.exe" --enable=warning --language=c++ --platform=win64 --std=c++20 -I include/retro/image --error-exitcode=1 src/image/*'
 
     - name: Run Unit Tests
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
