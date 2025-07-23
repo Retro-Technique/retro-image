@@ -46,6 +46,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <vector>
+#include <span>
 
 #include "image/export.h"
 #include "image/color.h"

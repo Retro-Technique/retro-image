@@ -52,8 +52,8 @@ namespace retro::image
 
 	public:
 
-		bitmap();
-		bitmap(const bitmap& other) = default;
+		bitmap() noexcept;
+		bitmap(const bitmap& other) noexcept  = default;
 		bitmap(bitmap&& other) noexcept = default;
 		~bitmap() = default;
 
@@ -71,7 +71,9 @@ namespace retro::image
 		[[nodiscard]] constexpr std::size_t width() const noexcept { return m_width; }
 		[[nodiscard]] constexpr std::size_t height() const noexcept { return m_height; }
 		[[nodiscard]] constexpr std::size_t size() const noexcept { return m_width * m_height; }
-		[[nodiscard]] constexpr const std::uint8_t* data() const noexcept { return m_pixels.data(); }
+		[[nodiscard]] constexpr std::size_t size_bytes() const noexcept { return m_pixels.size(); }
+		[[nodiscard]] constexpr bool empty() const noexcept { return m_pixels.empty(); }
+		[[nodiscard]] constexpr std::span<const color> data() const noexcept { return std::span<const color>(reinterpret_cast<const color*>(m_pixels.data()), size()); }
 
 #pragma endregion
 #pragma region Operations

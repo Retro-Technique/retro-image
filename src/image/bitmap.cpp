@@ -45,7 +45,7 @@ namespace retro::image
 
 #pragma region Constructors
 
-	bitmap::bitmap()
+	bitmap::bitmap() noexcept
 		: m_width(0)
 		, m_height(0)
 	{
