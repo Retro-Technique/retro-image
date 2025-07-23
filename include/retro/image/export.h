@@ -7,7 +7,7 @@
  * Copyright(c) 2014-2025 Retro Technique
  *
  * This software is a computer program whose purpose is to provide
- * minimalist "C with classes" functionalities.
+ * minimalist modern C++ functionalities for 2D game development.
  *
  * This software is governed by the CeCILL license under French law and
  * abiding by the rules of distribution of free software.  You can  use,
@@ -53,10 +53,8 @@
 
 #if defined(RETRO_IMAGE_EXPORTS)
 #define RETRO_IMAGE_API RETRO_IMAGE_API_EXPORT
-#define RETRO_IMAGE_EXTERN
 #else
 #define RETRO_IMAGE_API RETRO_IMAGE_API_IMPORT
-#define RETRO_IMAGE_EXTERN extern
 #endif
 
 #ifdef _MSC_VER
